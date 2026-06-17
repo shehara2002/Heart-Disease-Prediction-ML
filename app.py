@@ -45,7 +45,7 @@ st.set_page_config(
 )
 
 # ============================================================================
-# CUSTOM CSS — MODERN HEALTHCARE THEME
+# CUSTOM CSS — PREMIUM DARK HEALTHCARE THEME
 # ============================================================================
 st.markdown("""
 <style>
@@ -56,25 +56,27 @@ st.markdown("""
     }
 
     .main {
-        background-color: #f5f7fa;
+        background-color: #0b0f19;
     }
 
     /* Header */
     .app-header {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8a 50%, #3a7ca5 100%);
+        background: linear-gradient(135deg, #161b2c 0%, #1e293b 100%);
         padding: 2.2rem 2.5rem;
         border-radius: 18px;
         margin-bottom: 1.8rem;
-        box-shadow: 0 8px 24px rgba(30, 58, 95, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);
+        border: 1px solid rgba(0, 240, 255, 0.2);
     }
     .app-header h1 {
-        color: white;
+        color: #f1f5f9;
         font-size: 2.1rem;
         font-weight: 800;
         margin: 0;
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
     }
     .app-header p {
-        color: #cfe3f5;
+        color: #94a3b8;
         font-size: 1.05rem;
         margin-top: 0.4rem;
         font-weight: 400;
@@ -82,32 +84,39 @@ st.markdown("""
 
     /* Generic card */
     .card {
-        background: white;
+        background: #161b2c;
         border-radius: 16px;
         padding: 1.6rem 1.8rem;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        border: 1px solid #eef1f5;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         margin-bottom: 1.2rem;
     }
 
     /* Metric-style cards */
     .metric-card {
-        background: white;
+        background: #161b2c;
         border-radius: 14px;
         padding: 1.3rem;
         text-align: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        border: 1px solid #eef1f5;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         height: 100%;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 240, 255, 0.15);
+        border: 1px solid rgba(0, 240, 255, 0.25);
     }
     .metric-card .value {
         font-size: 1.9rem;
         font-weight: 800;
-        color: #1e3a5f;
+        color: #00f0ff;
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
     }
     .metric-card .label {
         font-size: 0.85rem;
-        color: #6b7785;
+        color: #94a3b8;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.04em;
@@ -116,22 +125,26 @@ st.markdown("""
 
     /* Risk result banners */
     .risk-banner-low {
-        background: linear-gradient(135deg, #e6f9ee 0%, #d4f3e0 100%);
-        border-left: 6px solid #2ecc71;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-left: 6px solid #10b981;
         border-radius: 14px;
         padding: 1.6rem 2rem;
         margin-bottom: 1rem;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
     }
     .risk-banner-high {
-        background: linear-gradient(135deg, #fdeaea 0%, #fbdcdc 100%);
-        border-left: 6px solid #e74c3c;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-left: 6px solid #ef4444;
         border-radius: 14px;
         padding: 1.6rem 2rem;
         margin-bottom: 1rem;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
     }
-    .risk-banner-low h2 { color: #1e7e44; margin: 0 0 0.3rem 0; }
-    .risk-banner-high h2 { color: #b0291c; margin: 0 0 0.3rem 0; }
-    .risk-banner-low p, .risk-banner-high p { color: #444; margin: 0.15rem 0; font-size: 1.02rem; }
+    .risk-banner-low h2 { color: #34d399; margin: 0 0 0.3rem 0; font-weight: 700; }
+    .risk-banner-high h2 { color: #f87171; margin: 0 0 0.3rem 0; font-weight: 700; }
+    .risk-banner-low p, .risk-banner-high p { color: #cbd5e1; margin: 0.15rem 0; font-size: 1.02rem; }
 
     /* Status badges */
     .badge {
@@ -141,41 +154,53 @@ st.markdown("""
         font-size: 0.82rem;
         font-weight: 700;
     }
-    .badge-normal { background: #d4f3e0; color: #1e7e44; }
-    .badge-warning { background: #fff3cd; color: #8a6500; }
-    .badge-high { background: #fbdcdc; color: #b0291c; }
+    .badge-normal { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .badge-high { background: rgba(239, 68, 68, 0.2); color: #f87171; }
 
     /* Section title */
     .section-title {
         font-size: 1.35rem;
         font-weight: 700;
-        color: #1e3a5f;
+        color: #00f0ff;
         margin: 1.6rem 0 0.8rem 0;
         padding-bottom: 0.4rem;
-        border-bottom: 3px solid #e1ebf5;
+        border-bottom: 3px solid rgba(0, 240, 255, 0.15);
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+    }
+
+    /* Streamlit expander backgrounds */
+    .streamlit-expanderHeader {
+        background-color: #161b2c !important;
+        border: 1px solid rgba(255,255,255,0.05) !important;
+        border-radius: 8px !important;
     }
 
     .stButton>button {
-        background: linear-gradient(135deg, #1e3a5f 0%, #3a7ca5 100%);
-        color: white;
+        background: linear-gradient(135deg, #00f0ff 0%, #00a8cc 100%);
+        color: #0b0f19;
         font-weight: 700;
         border-radius: 12px;
         padding: 0.7rem 1.6rem;
         border: none;
         width: 100%;
         font-size: 1.05rem;
-        box-shadow: 0 4px 12px rgba(30,58,95,0.25);
+        box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        box-shadow: 0 6px 18px rgba(30,58,95,0.35);
+        box-shadow: 0 6px 20px rgba(0, 240, 255, 0.5);
         transform: translateY(-1px);
+        background: linear-gradient(135deg, #33f4ff 0%, #00c2eb 100%);
+        color: #0b0f19;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #1e3a5f;
+        background-color: #0b0f19;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
     }
     [data-testid="stSidebar"] * {
-        color: #e8f0f8 !important;
+        color: #f1f5f9 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -259,9 +284,16 @@ if load_error:
     st.info("The app will still render below, but predictions are disabled until the model files are available.")
 
 # ============================================================================
-# SIDEBAR — quick info
+# SIDEBAR — NAVIGATION & INFO
 # ============================================================================
 with st.sidebar:
+    st.markdown("### 🧭 Navigation")
+    page = st.radio(
+        "Select Page:",
+        ["Heart Risk Predictor", "Model Performance"],
+        index=0
+    )
+    st.markdown("---")
     st.markdown("### ℹ️ About This Tool")
     st.markdown(
         "This dashboard uses a **Logistic Regression** model trained on the "
@@ -278,6 +310,45 @@ with st.sidebar:
         "does not replace professional medical advice, diagnosis, or treatment."
     )
 
+# ============================================================================
+# PAGE ROUTING
+# ============================================================================
+if page == "Model Performance":
+    st.markdown('<div class="section-title">📈 Model Performance</div>', unsafe_allow_html=True)
+
+    m1, m2, m3, m4 = st.columns(4)
+    metric_labels = [
+        ("Accuracy", MODEL_METRICS["accuracy"]),
+        ("Precision", MODEL_METRICS["precision"]),
+        ("Recall", MODEL_METRICS["recall"]),
+        ("F1 Score", MODEL_METRICS["f1"]),
+    ]
+    for col, (label, val) in zip([m1, m2, m3, m4], metric_labels):
+        col.markdown(f"""
+        <div class="metric-card">
+            <div class="value">{val*100:.0f}%</div>
+            <div class="label">{label}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    perf_col1, perf_col2 = st.columns([1, 1])
+    with perf_col1:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown("**Metrics Overview**")
+        st.plotly_chart(make_confusion_style_metrics_chart(), use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    with perf_col2:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown("**Classification Report**")
+        st.code(CLASSIFICATION_REPORT_TEXT, language=None)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+    st.caption("⚠️ This application is for educational and informational purposes only and is not a substitute for professional medical advice.")
+    st.stop()
+
+# Continue below if page == "Heart Risk Predictor"
 # ============================================================================
 # INPUT FORM
 # ============================================================================
@@ -453,41 +524,49 @@ def make_gauge_chart(prob_high):
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=prob_high * 100,
-        number={"suffix": "%", "font": {"size": 40, "color": "#1e3a5f"}},
-        title={"text": f"Cardiovascular Risk Score<br><span style='font-size:0.8em;color:{level_color}'>{level_text}</span>"},
+        number={"suffix": "%", "font": {"size": 40, "color": "#00f0ff"}},
+        title={"text": f"<span style='color:#f1f5f9;font-weight:700;'>Cardiovascular Risk Score</span><br><span style='font-size:0.8em;color:{level_color};font-weight:600;'>{level_text}</span>"},
         gauge={
-            "axis": {"range": [0, 100], "tickwidth": 1},
+            "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#cbd5e1"},
             "bar": {"color": level_color},
             "steps": [
-                {"range": [0, 34], "color": "#e6f9ee"},
-                {"range": [34, 67], "color": "#fff8e1"},
-                {"range": [67, 100], "color": "#fdeaea"},
+                {"range": [0, 34], "color": "rgba(16, 185, 129, 0.15)"},
+                {"range": [34, 67], "color": "rgba(245, 158, 11, 0.15)"},
+                {"range": [67, 100], "color": "rgba(239, 68, 68, 0.15)"},
             ],
             "threshold": {
-                "line": {"color": "#1e3a5f", "width": 4},
+                "line": {"color": "#00f0ff", "width": 4},
                 "thickness": 0.8,
                 "value": prob_high * 100,
             },
         },
     ))
-    fig.update_layout(height=320, margin=dict(t=70, b=10, l=30, r=30), paper_bgcolor="white")
+    fig.update_layout(
+        height=320, 
+        margin=dict(t=70, b=10, l=30, r=30), 
+        paper_bgcolor="rgba(0,0,0,0)",
+        font={"color": "#cbd5e1"}
+    )
     return fig
 
 
 def make_comparison_chart():
-    params = ["Cholesterol\n(mg/dL)", "Blood Pressure\n(mmHg)", "Max Heart Rate\n(bpm)"]
+    params = ["Cholesterol<br>(mg/dL)", "Blood Pressure<br>(mmHg)", "Max Heart Rate<br>(bpm)"]
     user_vals = [chol, trestbps, thalach]
     recommended = [200, 120, 220 - age]
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(name="Your Value", x=params, y=user_vals, marker_color="#3a7ca5"))
-    fig.add_trace(go.Bar(name="Recommended", x=params, y=recommended, marker_color="#a8d5ba"))
+    fig.add_trace(go.Bar(name="Your Value", x=params, y=user_vals, marker_color="#00f0ff"))
+    fig.add_trace(go.Bar(name="Recommended", x=params, y=recommended, marker_color="rgba(16, 185, 129, 0.7)"))
     fig.update_layout(
         barmode="group", height=380,
         margin=dict(t=40, b=40, l=40, r=20),
-        plot_bgcolor="white", paper_bgcolor="white",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+        font={"color": "#cbd5e1"},
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font={"color": "#cbd5e1"}),
     )
+    fig.update_xaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
+    fig.update_yaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
     return fig
 
 
@@ -501,20 +580,29 @@ def make_health_indicator_charts():
     for v, hmax in zip(values, healthy_max):
         ratio = v / hmax if hmax else 1
         if ratio <= 1.0:
-            colors_list.append("#2ecc71")
+            colors_list.append("#10b981")
         elif ratio <= 1.2:
-            colors_list.append("#f1c40f")
+            colors_list.append("#f59e0b")
         else:
-            colors_list.append("#e74c3c")
+            colors_list.append("#ef4444")
 
-    fig.add_trace(go.Bar(x=categories, y=values, marker_color=colors_list, name="Current Value",
-                          text=values, textposition="outside"))
-    fig.add_trace(go.Scatter(x=categories, y=healthy_max, mode="markers+lines",
-                              name="Healthy Threshold", marker=dict(color="#1e3a5f", size=10, symbol="diamond"),
-                              line=dict(dash="dash", color="#1e3a5f")))
-    fig.update_layout(height=380, margin=dict(t=30, b=30, l=40, r=20),
-                       plot_bgcolor="white", paper_bgcolor="white",
-                       legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5))
+    fig.add_trace(go.Bar(
+        x=categories, y=values, marker_color=colors_list, name="Current Value",
+        text=values, textposition="outside", textfont=dict(color="#cbd5e1")
+    ))
+    fig.add_trace(go.Scatter(
+        x=categories, y=healthy_max, mode="markers+lines",
+        name="Healthy Threshold", marker=dict(color="#00f0ff", size=10, symbol="diamond"),
+        line=dict(dash="dash", color="#00f0ff")
+    ))
+    fig.update_layout(
+        height=380, margin=dict(t=30, b=30, l=40, r=20),
+        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+        font={"color": "#cbd5e1"},
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font={"color": "#cbd5e1"})
+    )
+    fig.update_xaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
+    fig.update_yaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
     return fig
 
 
@@ -525,11 +613,16 @@ def make_feature_importance_chart():
     fig = px.bar(
         x=vals, y=names, orientation="h",
         labels={"x": "Relative Importance", "y": ""},
-        color=vals, color_continuous_scale=["#bcd9ec", "#1e3a5f"],
+        color=vals, color_continuous_scale=["rgba(0, 240, 255, 0.2)", "#00f0ff"],
     )
-    fig.update_layout(height=420, margin=dict(t=20, b=30, l=20, r=20),
-                       plot_bgcolor="white", paper_bgcolor="white",
-                       coloraxis_showscale=False)
+    fig.update_layout(
+        height=420, margin=dict(t=20, b=30, l=20, r=20),
+        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+        font={"color": "#cbd5e1"},
+        coloraxis_showscale=False
+    )
+    fig.update_xaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
+    fig.update_yaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
     return fig
 
 
@@ -539,11 +632,17 @@ def make_confusion_style_metrics_chart():
               MODEL_METRICS["recall"], MODEL_METRICS["f1"]]
     fig = go.Figure(go.Bar(
         x=labels, y=[v * 100 for v in values],
-        marker_color=["#1e3a5f", "#3a7ca5", "#5fa8d3", "#8bc6e8"],
+        marker_color=["#00f0ff", "#38bdf8", "#0ea5e9", "#0284c7"],
         text=[f"{v*100:.0f}%" for v in values], textposition="outside",
+        textfont=dict(color="#cbd5e1")
     ))
-    fig.update_layout(height=320, yaxis_range=[0, 105], margin=dict(t=30, b=30, l=30, r=20),
-                       plot_bgcolor="white", paper_bgcolor="white")
+    fig.update_layout(
+        height=320, yaxis_range=[0, 105], margin=dict(t=30, b=30, l=30, r=20),
+        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+        font={"color": "#cbd5e1"}
+    )
+    fig.update_xaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
+    fig.update_yaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
     return fig
 
 
@@ -728,19 +827,19 @@ if generate_clicked:
         risk_rows = get_risk_assessment_table()
 
         table_html = """
-        <table style="width:100%; border-collapse: collapse; font-size:0.95rem;">
-        <tr style="background:#1e3a5f; color:white;">
-            <th style="padding:10px; text-align:left; border-radius:8px 0 0 0;">Parameter</th>
-            <th style="padding:10px; text-align:left;">User Value</th>
-            <th style="padding:10px; text-align:left;">Normal Range</th>
-            <th style="padding:10px; text-align:left; border-radius:0 8px 0 0;">Status</th>
+        <table style="width:100%; border-collapse: collapse; font-size:0.95rem; color:#cbd5e1;">
+        <tr style="background:#0f172a; color:#f1f5f9; border-bottom: 2px solid rgba(0, 240, 255, 0.2);">
+            <th style="padding:12px 10px; text-align:left; border-radius:8px 0 0 0;">Parameter</th>
+            <th style="padding:12px 10px; text-align:left;">User Value</th>
+            <th style="padding:12px 10px; text-align:left;">Normal Range</th>
+            <th style="padding:12px 10px; text-align:left; border-radius:0 8px 0 0;">Status</th>
         </tr>
         """
         for i, (name, val, normal_range, status, explanation) in enumerate(risk_rows):
-            bg = "#f8fafc" if i % 2 == 0 else "#ffffff"
+            bg = "rgba(30, 41, 59, 0.4)" if i % 2 == 0 else "rgba(15, 23, 42, 0.4)"
             table_html += f"""
-            <tr style="background:{bg};">
-                <td style="padding:10px;"><b>{name}</b></td>
+            <tr style="background:{bg}; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding:10px; color:#f1f5f9;"><b>{name}</b></td>
                 <td style="padding:10px;">{val}</td>
                 <td style="padding:10px;">{normal_range}</td>
                 <td style="padding:10px;">{status_badge(status)}</td>
@@ -814,39 +913,6 @@ if generate_clicked:
 
 else:
     st.info("👆 Fill in the patient details above and click **Generate Health Report** to see the prediction, risk analysis, and visualizations.")
-
-# ============================================================================
-# MODEL PERFORMANCE DASHBOARD (always visible)
-# ============================================================================
-st.markdown('<div class="section-title">📈 Model Performance</div>', unsafe_allow_html=True)
-
-m1, m2, m3, m4 = st.columns(4)
-metric_labels = [
-    ("Accuracy", MODEL_METRICS["accuracy"]),
-    ("Precision", MODEL_METRICS["precision"]),
-    ("Recall", MODEL_METRICS["recall"]),
-    ("F1 Score", MODEL_METRICS["f1"]),
-]
-for col, (label, val) in zip([m1, m2, m3, m4], metric_labels):
-    col.markdown(f"""
-    <div class="metric-card">
-        <div class="value">{val*100:.0f}%</div>
-        <div class="label">{label}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
-perf_col1, perf_col2 = st.columns([1, 1])
-with perf_col1:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("**Metrics Overview**")
-    st.plotly_chart(make_confusion_style_metrics_chart(), use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-with perf_col2:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("**Classification Report**")
-    st.code(CLASSIFICATION_REPORT_TEXT, language=None)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<br><hr>", unsafe_allow_html=True)
 st.caption("⚠️ This application is for educational and informational purposes only and is not a substitute for professional medical advice.")
