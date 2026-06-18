@@ -245,6 +245,73 @@ st.markdown("""
     [data-testid="stSidebar"] * {
         color: #f1f5f9 !important;
     }
+
+    /* ── Chat Bubble Styles ──────────────────────────────── */
+    .chat-window {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem 0.5rem;
+        max-height: 480px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0,240,255,0.3) transparent;
+    }
+    .chat-window::-webkit-scrollbar { width: 5px; }
+    .chat-window::-webkit-scrollbar-track { background: transparent; }
+    .chat-window::-webkit-scrollbar-thumb {
+        background: rgba(0,240,255,0.3);
+        border-radius: 10px;
+    }
+
+    .chat-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.6rem;
+        width: 100%;
+    }
+    .chat-row.user-row   { flex-direction: row-reverse; }
+    .chat-row.bot-row    { flex-direction: row; }
+
+    .chat-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+    .avatar-user { background: linear-gradient(135deg,#00f0ff,#0077b6); }
+    .avatar-bot  { background: rgba(30,37,60,0.9); border: 1px solid rgba(0,240,255,0.2); }
+
+    .chat-bubble {
+        max-width: 72%;
+        padding: 0.75rem 1.1rem;
+        border-radius: 18px;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        word-break: break-word;
+    }
+    .bubble-user {
+        background: linear-gradient(135deg, #00c8e0 0%, #0077b6 100%);
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 4px 14px rgba(0,200,224,0.25);
+    }
+    .bubble-bot {
+        background: rgba(22, 27, 44, 0.88);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(0,240,255,0.12);
+        color: #e2e8f0;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+    .bubble-bot p, .bubble-user p { margin: 0; }
+    .bubble-bot ul, .bubble-bot ol { margin: 0.3rem 0 0.3rem 1rem; padding: 0; }
+    .bubble-bot li { margin-bottom: 0.2rem; }
+    /* ─────────────────────────────────────────────────────── */
 </style>
 """, unsafe_allow_html=True)
 
@@ -358,12 +425,12 @@ def get_risk_assessment_table():
     # Max Heart Rate (lower achieved HR for age can indicate reduced cardiac capacity)
     expected_max_hr = 220 - age
     pct_of_expected = thalach / expected_max_hr if expected_max_hr > 0 else 1
-    if pct_of_expected >= 0.85:
+    if 0.85 <= pct_of_expected <= 1.05:
         hr_status = "Normal"
-    elif pct_of_expected >= 0.70:
-        hr_status = "Warning"
+    elif pct_of_expected > 1.05:
+        hr_status = "Warning"   # exceeds age-predicted max
     else:
-        hr_status = "High"
+        hr_status = "High" 
     rows.append(("Max Heart Rate", f"{thalach} bpm", f"~{expected_max_hr} bpm (age-predicted)", hr_status,
                  "A lower-than-expected maximum heart rate can indicate reduced cardiac fitness."))
 
@@ -983,16 +1050,49 @@ with container_result:
                     # Create a container for messages to ensure they render above the user chat_input
                     message_container = st.container()
 
+                    # ── Helper: render a single bubble as HTML ──
+                    def render_bubble(role, content):
+                        import html as htmllib
+                        if role == "user":
+                            row_cls, avatar_cls, bubble_cls, avatar_icon = (
+                                "user-row", "avatar-user", "bubble-user", "👤"
+                            )
+                        else:
+                            row_cls, avatar_cls, bubble_cls, avatar_icon = (
+                                "bot-row", "avatar-bot", "bubble-bot", "🤖"
+                            )
+                        # Preserve markdown newlines as <br> for plain text,
+                        # but keep markdown code/bullets readable via simple conversion
+                        safe = content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                        safe = safe.replace("\n", "<br>")
+                        return f"""
+                        <div class="chat-row {row_cls}">
+                            <div class="chat-avatar {avatar_cls}">{avatar_icon}</div>
+                            <div class="chat-bubble {bubble_cls}">{safe}</div>
+                        </div>"""
+
                     # Render previous chat history inside container
                     with message_container:
-                        for chat_msg in st.session_state.chat_history:
-                            with st.chat_message(chat_msg["role"]):
-                                st.markdown(chat_msg["content"])
-                            
+                        if st.session_state.chat_history:
+                            bubbles_html = "".join(
+                                render_bubble(m["role"], m["content"])
+                                for m in st.session_state.chat_history
+                            )
+                            st.markdown(
+                                f'<div class="chat-window">{bubbles_html}</div>',
+                                unsafe_allow_html=True
+                            )
+                        else:
+                            st.markdown(
+                                '<div style="text-align:center;color:#4a5568;padding:2rem 0;font-size:0.93rem;">'
+                                '💬 No messages yet. Ask me anything about your heart health report!</div>',
+                                unsafe_allow_html=True
+                            )
+                    
                     # Construct system prompt with up-to-date parameters
                     fbs_val = "Elevated (>120 mg/dL)" if fbs == 1 else "Normal (<=120 mg/dL)"
                     exang_val = "Yes" if exang == 1 else "No"
-                    pred_val = "⚠️ HIGH RISK - Possible Heart Disease" if prediction == 1 else "✅ LOW RISK - Healthy Profile"
+                    pred_val = "⚠️ HIGH RISK - Possible Heart Disease" if prediction == 0 else "✅ LOW RISK - Healthy Profile"
                     
                     system_prompt = f"""You are an empathetic, professional, and knowledgeable cardiovascular health assistant.
 You are assisting a user who has just completed their AI heart disease prediction assessment.
@@ -1023,39 +1123,35 @@ Guidelines for your behavior:
 
                     # Input field for user query
                     if user_query := st.chat_input("Ask me about your heart health report...", key="chat_input_message"):
-                        # Show user query and save inside message_container
-                        with message_container:
-                            with st.chat_message("user"):
-                                st.markdown(user_query)
-                            st.session_state.chat_history.append({"role": "user", "content": user_query})
-                            
-                            # Generate response
-                            with st.chat_message("assistant"):
-                                with st.spinner("Analyzing profile & formulating response..."):
-                                    try:
-                                        genai.configure(api_key=api_key)
-                                        # Instantiate model with system instructions
-                                        model_gen = genai.GenerativeModel(
-                                            model_name='gemini-2.5-flash',
-                                            system_instruction=system_prompt
-                                        )
-                                        
-                                        # Format history for Gemini's API
-                                        history_gemini = []
-                                        # Exclude the last message we just appended (the current query)
-                                        for prev_msg in st.session_state.chat_history[:-1]:
-                                            role = "user" if prev_msg["role"] == "user" else "model"
-                                            history_gemini.append({"role": role, "parts": [prev_msg["content"]]})
-                                            
-                                        chat_session = model_gen.start_chat(history=history_gemini)
-                                        response = chat_session.send_message(user_query)
-                                        
-                                        # Display & save assistant response
-                                        assistant_reply = response.text
-                                        st.markdown(assistant_reply)
-                                        st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
-                                    except Exception as chat_err:
-                                        st.error(f"Error calling Gemini API: {chat_err}")
+                        # Save user message to history
+                        st.session_state.chat_history.append({"role": "user", "content": user_query})
+                        
+                        # Generate response
+                        with st.spinner("🤖 Analyzing profile & formulating response..."):
+                            try:
+                                genai.configure(api_key=api_key)
+                                # Instantiate model with system instructions
+                                model_gen = genai.GenerativeModel(
+                                    model_name='gemini-2.5-flash',
+                                    system_instruction=system_prompt
+                                )
+                                
+                                # Format history for Gemini's API
+                                history_gemini = []
+                                # Exclude the last message we just appended (the current query)
+                                for prev_msg in st.session_state.chat_history[:-1]:
+                                    role = "user" if prev_msg["role"] == "user" else "model"
+                                    history_gemini.append({"role": role, "parts": [prev_msg["content"]]})
+                                    
+                                chat_session = model_gen.start_chat(history=history_gemini)
+                                response = chat_session.send_message(user_query)
+                                
+                                # Save assistant response and rerun to refresh bubbles
+                                assistant_reply = response.text
+                                st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
+                                st.rerun()
+                            except Exception as chat_err:
+                                st.error(f"Error calling Gemini API: {chat_err}")
                 except Exception as config_err:
                     st.error(f"Error configuring Google GenAI: {config_err}")
 
