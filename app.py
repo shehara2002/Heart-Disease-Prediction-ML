@@ -24,6 +24,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
+import google.generativeai as genai
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -535,78 +536,137 @@ with st.sidebar:
 
 
 # ============================================================================
-# INPUT FORM
+# MAIN APPLICATION LAYOUT
 # ============================================================================
-st.markdown('<div class="section-title">📝 Patient Information</div>', unsafe_allow_html=True)
+container_input = st.container()
 
-with st.expander("👤 Personal Information", expanded=True):
-    c1, c2 = st.columns(2)
-    with c1:
-        age = st.number_input("Age (years)", min_value=1, max_value=120, value=50, step=1)
-    with c2:
-        sex_label = st.radio("Gender", ["Male", "Female"], horizontal=True)
+with container_input:
+    st.markdown('<div class="section-title">📥 Patient Parameters</div>', unsafe_allow_html=True)
+    st.caption("Adjust the clinical values below. Tooltips (❔) are available to explain each medical parameter in simple terms.")
+    
+    tab_profile, tab_tests = st.tabs(["👤 Profile & Vitals", "🩺 Clinical Tests"])
+    
+    with tab_profile:
+        st.markdown("#### Demographics")
+        age = st.number_input(
+            "Age (years)", 
+            min_value=1, max_value=120, value=50, step=1,
+            help="Age is a primary factor in cardiovascular health. Risk naturally increases over time."
+        )
+        sex_label = st.radio(
+            "Gender", 
+            ["Male", "Female"], horizontal=True,
+            help="Biological gender affects cardiovascular risk profiles and baseline model calculations."
+        )
         sex = 1 if sex_label == "Male" else 0
-
-with st.expander("🩺 Medical Measurements", expanded=True):
-    c1, c2 = st.columns(2)
-    with c1:
-        trestbps = st.slider("Resting Blood Pressure (mmHg)", min_value=80, max_value=220, value=120, step=1)
-        chol = st.slider("Cholesterol Level (mg/dL)", min_value=100, max_value=600, value=200, step=1)
-        thalach = st.slider("Maximum Heart Rate Achieved (bpm)", min_value=60, max_value=220, value=150, step=1)
-    with c2:
-        oldpeak = st.slider("ST Depression (oldpeak)", min_value=0.0, max_value=6.5, value=1.0, step=0.1)
-        st.markdown("&nbsp;")
-        st.caption("ST Depression is measured during an exercise ECG test relative to rest.")
-
-with st.expander("❤️ Heart Test Results", expanded=True):
-    c1, c2 = st.columns(2)
-    with c1:
+        
+        st.markdown("---")
+        st.markdown("#### Key Vitals")
+        trestbps = st.slider(
+            "Resting Blood Pressure (mmHg)", 
+            min_value=80, max_value=220, value=120, step=1,
+            help="Resting blood pressure measured in mm Hg. Normal is generally below 120. Over 140 is elevated (hypertension)."
+        )
+        chol = st.slider(
+            "Cholesterol Level (mg/dL)", 
+            min_value=100, max_value=600, value=200, step=1,
+            help="Serum cholesterol in mg/dL. Ideal is below 200 mg/dL. Values above 240 mg/dL indicate hypercholesterolemia."
+        )
+        
+        fbs_label = st.radio(
+            "Fasting Blood Sugar > 120 mg/dL?", 
+            ["No", "Yes"], horizontal=True,
+            help="Is fasting blood sugar higher than 120 mg/dL? Elevated blood sugar can be a sign of diabetes, which increases risk."
+        )
+        fbs = 1 if fbs_label == "Yes" else 0
+        
+        thalach = st.slider(
+            "Maximum Heart Rate Achieved (bpm)", 
+            min_value=60, max_value=220, value=150, step=1,
+            help="The highest heart rate reached during a cardiac stress test. Expected max is roughly (220 - Age)."
+        )
+        
+    with tab_tests:
+        st.markdown("#### Chest & Exercise Symptoms")
         cp_options = {
             "Typical Angina": 0,
             "Atypical Angina": 1,
             "Non-anginal Pain": 2,
             "Asymptomatic": 3,
         }
-        cp_label = st.selectbox("Chest Pain Type", list(cp_options.keys()))
+        cp_label = st.selectbox(
+            "Chest Pain Type", 
+            list(cp_options.keys()),
+            help="Typical Angina: exertion-related chest pain. Atypical Angina: general chest discomfort. Non-anginal: pain not from the heart. Asymptomatic: no pain."
+        )
         cp = cp_options[cp_label]
-
-        fbs_label = st.radio("Fasting Blood Sugar > 120 mg/dL?", ["No", "Yes"], horizontal=True)
-        fbs = 1 if fbs_label == "Yes" else 0
-
+        
+        exang_label = st.radio(
+            "Exercise Induced Angina?", 
+            ["No", "Yes"], horizontal=True,
+            help="Did physical exercise trigger chest pain? Pain during exercise can indicate narrowed coronary arteries."
+        )
+        exang = 1 if exang_label == "Yes" else 0
+        
+        st.markdown("---")
+        st.markdown("#### ECG & Cardiac Measurements")
+        
         restecg_options = {
             "Normal": 0,
             "ST-T Wave Abnormality": 1,
             "Left Ventricular Hypertrophy": 2,
         }
-        restecg_label = st.selectbox("Resting ECG Result", list(restecg_options.keys()))
+        restecg_label = st.selectbox(
+            "Resting ECG Result", 
+            list(restecg_options.keys()),
+            help="Resting Electrocardiogram pattern. ST-T wave changes or left ventricular hypertrophy suggest stress or enlargement of the heart muscle."
+        )
         restecg = restecg_options[restecg_label]
-
-        exang_label = st.radio("Exercise Induced Angina?", ["No", "Yes"], horizontal=True)
-        exang = 1 if exang_label == "Yes" else 0
-
-    with c2:
+        
+        oldpeak = st.slider(
+            "ST Depression (oldpeak)", 
+            min_value=0.0, max_value=6.5, value=1.0, step=0.1,
+            help="ST segment depression on ECG during exercise vs rest. Represents strain on the heart during physical effort. Lower (< 1.0) is better."
+        )
+        st.caption("ST Depression is measured during an exercise ECG test relative to rest.")
+        
         slope_options = {
             "Upsloping": 0,
             "Flat": 1,
             "Downsloping": 2,
         }
-        slope_label = st.selectbox("Slope of ST Segment", list(slope_options.keys()))
+        slope_label = st.selectbox(
+            "Slope of ST Segment", 
+            list(slope_options.keys()),
+            help="The slope direction of the ST segment during peak exercise. Flat or downsloping patterns can indicate cardiac stress."
+        )
         slope = slope_options[slope_label]
-
-        ca = st.slider("Number of Major Vessels Colored (0–4)", min_value=0, max_value=4, value=0, step=1)
-
+        
+        ca = st.slider(
+            "Number of Major Vessels Colored (0–4)", 
+            min_value=0, max_value=4, value=0, step=1,
+            help="Number of major coronary blood vessels (0-4) visible on a fluoroscopy scan. Fewer blocked vessels (0) represents clear blood flow."
+        )
+        
         thal_options = {
             "Normal": 1,
             "Fixed Defect": 2,
             "Reversible Defect": 3,
         }
-        thal_label = st.selectbox("Thalassemia", list(thal_options.keys()))
+        thal_label = st.selectbox(
+            "Thalassemia", 
+            list(thal_options.keys()),
+            help="A blood flow test indicator. Normal: healthy circulation. Fixed Defect: permanent scar tissue. Reversible Defect: temporary flow restriction."
+        )
         thal = thal_options[thal_label]
 
-st.markdown("<br>", unsafe_allow_html=True)
-generate_clicked = st.button("🔬 Generate Health Report", use_container_width=True)
-
-
+    st.markdown("<br>", unsafe_allow_html=True)
+    if "report_generated" not in st.session_state:
+        st.session_state.report_generated = False
+        
+    generate_clicked = st.button("🔬 Generate Health Report", use_container_width=True)
+    if generate_clicked:
+        st.session_state.report_generated = True
 
 
 # ============================================================================
@@ -734,134 +794,275 @@ def generate_pdf_report(prediction, probability, risk_table_rows):
 
 
 # ============================================================================
-# MAIN PREDICTION FLOW
+# MAIN PREDICTION & RESULT DISPLAY FLOW
 # ============================================================================
-if generate_clicked:
-    if model is None or scaler is None:
-        st.error("Cannot generate a report because the model or scaler failed to load. Please check that heart_model.pkl and heart_scaler.pkl exist in the app directory.")
-    else:
-        input_df = build_input_dataframe()
-        try:
-            scaled_input = scaler.transform(input_df)
-            prediction = int(model.predict(scaled_input)[0])
-            proba = model.predict_proba(scaled_input)[0]
-            prob_high = float(proba[1])
-            confidence = prob_high if prediction == 1 else float(proba[0])
-        except Exception as e:
-            st.error(f"Prediction failed: {e}")
-            st.stop()
+if "report_generated" not in st.session_state:
+    st.session_state.report_generated = False
 
+if not st.session_state.report_generated:
+    st.info("👆 Adjust the parameters above and click **Generate Health Report** to perform the AI cardiovascular assessment.")
+    st.stop()
+
+if model is None or scaler is None:
+    prediction_error = "Cannot generate a prediction because the model or scaler failed to load. Please check that heart_model.pkl and heart_scaler.pkl exist in the app directory."
+else:
+    prediction_error = None
+    input_df = build_input_dataframe()
+    try:
+        scaled_input = scaler.transform(input_df)
+        prediction = int(model.predict(scaled_input)[0])
+        proba = model.predict_proba(scaled_input)[0]
+        prob_high = float(proba[1])
+        confidence = prob_high if prediction == 1 else float(proba[0])
+        risk_rows = get_risk_assessment_table()
+    except Exception as e:
+        prediction_error = f"Prediction failed: {e}"
+
+container_result = st.container()
+
+with container_result:
+    st.markdown('<div class="section-title">🔮 Risk Assessment & Dashboard</div>', unsafe_allow_html=True)
+    
+    if prediction_error:
+        st.error(f"⚠️ {prediction_error}")
+    else:
         # ---------------- Prediction Card ----------------
-        st.markdown('<div class="section-title">🎯 Prediction Result</div>', unsafe_allow_html=True)
         if prediction == 1:
             st.markdown(f"""
             <div class="risk-banner-high">
-                <h2>⚠️ High Risk - Possible Heart Disease</h2>
+                <h2>⚠️ Elevated Cardiovascular Risk Detected</h2>
                 <p><b>Confidence:</b> {confidence*100:.1f}%</p>
                 <p><b>Risk Level:</b> {risk_level_from_probability(prob_high)[0]}</p>
+                <p style="margin-top: 8px; font-size: 0.95rem; line-height: 1.4;">
+                    Our AI model indicates a higher risk of heart disease based on your inputs. 
+                    <b>What this means:</b> Your clinical test values fall into patterns associated with heart strain. 
+                    We recommend discussing these results and downloading the report PDF for a clinical review with your doctor.
+                </p>
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
             <div class="risk-banner-low">
-                <h2>✅ Low Risk - Healthy</h2>
+                <h2>✅ Low Risk Profile</h2>
                 <p><b>Confidence:</b> {confidence*100:.1f}%</p>
                 <p><b>Risk Level:</b> {risk_level_from_probability(prob_high)[0]}</p>
+                <p style="margin-top: 8px; font-size: 0.95rem; line-height: 1.4;">
+                    Our AI model indicates a healthy cardiovascular profile based on your current inputs. 
+                    <b>What this means:</b> Your vital metrics and test outputs align with expected healthy bounds. 
+                    Keep up a healthy lifestyle, physical exercise, and regular wellness screenings!
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
-        # ---------------- Patient Summary ----------------
-        st.markdown('<div class="section-title">🧾 Patient Summary</div>', unsafe_allow_html=True)
-        s1, s2, s3, s4 = st.columns(4)
-        for col, label, value in zip(
-            [s1, s2, s3, s4],
-            ["Age", "Gender", "Cholesterol", "Blood Pressure"],
-            [f"{age} yrs", sex_label, f"{chol} mg/dL", f"{trestbps} mmHg"],
-        ):
-            col.markdown(f"""
-            <div class="metric-card">
-                <div class="value">{value}</div>
-                <div class="label">{label}</div>
-            </div>
-            """, unsafe_allow_html=True)
+        # ---------------- Tabs for Dashboard Sections ----------------
+        tab_dash, tab_table, tab_explain, tab_recs, tab_chat = st.tabs([
+            "📊 Visual Dashboard", "📋 Clinical Analysis", "🧠 AI Model Logic", "💡 Health Guide", "💬 Health Assistant"
+        ])
+        
+        with tab_dash:
+            st.caption("ℹ️ **Visual Summary**: Explore your vital metrics in comparison with recommended targets. Move inputs on the left to watch them adjust in real-time.")
+            v1, v2 = st.columns(2)
+            with v1:
+                st.markdown('<div class="card">', unsafe_allow_html=True)
+                st.plotly_chart(make_gauge_chart(prob_high), use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
+            with v2:
+                st.markdown('<div class="card">', unsafe_allow_html=True)
+                st.markdown("**Vitals Comparison: User Value vs Recommended Range**")
+                st.plotly_chart(make_comparison_chart(), use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
 
-        # ---------------- Risk Assessment Table ----------------
-        st.markdown('<div class="section-title">📋 Health Risk Analysis</div>', unsafe_allow_html=True)
-        risk_rows = get_risk_assessment_table()
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown("**Health Indicators vs Healthy Thresholds**")
+            st.plotly_chart(make_health_indicator_charts(), use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        table_html = """<table style="width:100%; border-collapse: collapse; font-size:0.95rem; color:#cbd5e1;">
+        with tab_table:
+            st.caption("🩺 **Vitals & Risk Checklist**: A structured table of your values against medical references.")
+            # Patient Summary Metrics inside Clinical Analysis
+            s1, s2, s3 = st.columns(3)
+            with s1:
+                st.markdown(f"""
+                <div class="metric-card">
+                    <div class="value">{age} yrs</div>
+                    <div class="label">Age</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with s2:
+                st.markdown(f"""
+                <div class="metric-card">
+                    <div class="value">{sex_label}</div>
+                    <div class="label">Gender</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with s3:
+                st.markdown(f"""
+                <div class="metric-card">
+                    <div class="value">{chol} mg/dL</div>
+                    <div class="label">Cholesterol</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            # Risk Assessment Table
+            table_html = """<table style="width:100%; border-collapse: collapse; font-size:0.95rem; color:#cbd5e1;">
 <tr style="background:#0f172a; color:#f1f5f9; border-bottom: 2px solid rgba(0, 240, 255, 0.2);">
     <th style="padding:12px 10px; text-align:left; border-radius:8px 0 0 0;">Parameter</th>
     <th style="padding:12px 10px; text-align:left;">User Value</th>
     <th style="padding:12px 10px; text-align:left;">Normal Range</th>
     <th style="padding:12px 10px; text-align:left; border-radius:0 8px 0 0;">Status</th>
 </tr>"""
-        for i, (name, val, normal_range, status, explanation) in enumerate(risk_rows):
-            bg = "rgba(30, 41, 59, 0.4)" if i % 2 == 0 else "rgba(15, 23, 42, 0.4)"
-            safe_range = normal_range.replace("<", "&lt;").replace(">", "&gt;")
-            table_html += f"""<tr style="background:{bg}; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            for i, (name, val, normal_range, status, explanation) in enumerate(risk_rows):
+                bg = "rgba(30, 41, 59, 0.4)" if i % 2 == 0 else "rgba(15, 23, 42, 0.4)"
+                safe_range = normal_range.replace("<", "&lt;").replace(">", "&gt;")
+                table_html += f"""<tr style="background:{bg}; border-bottom: 1px solid rgba(255,255,255,0.05);">
     <td style="padding:10px; color:#f1f5f9;"><b>{name}</b></td>
     <td style="padding:10px;">{val}</td>
     <td style="padding:10px;">{safe_range}</td>
     <td style="padding:10px;">{status_badge(status)}</td>
 </tr>"""
-        table_html += "</table>"
-        st.markdown(f'<div class="card">{table_html}</div>', unsafe_allow_html=True)
+            table_html += "</table>"
+            st.markdown(f'<div class="card">{table_html}</div>', unsafe_allow_html=True)
 
-        with st.expander("📖 Detailed Explanations"):
-            for name, val, normal_range, status, explanation in risk_rows:
-                st.markdown(f"**{name}** — Value: {val} | Status: {status_badge(status)}", unsafe_allow_html=True)
-                st.caption(explanation)
+            with st.expander("📖 Detailed Explanations", expanded=False):
+                for name, val, normal_range, status, explanation in risk_rows:
+                    st.markdown(f"**{name}** — Value: {val} | Status: {status_badge(status)}", unsafe_allow_html=True)
+                    st.caption(explanation)
 
-        # ---------------- Visualization Dashboard ----------------
-        st.markdown('<div class="section-title">📊 Data Visualization Dashboard</div>', unsafe_allow_html=True)
-
-        v1, v2 = st.columns(2)
-        with v1:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.plotly_chart(make_gauge_chart(prob_high), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-        with v2:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown("**Parameter Comparison: User Value vs Recommended Range**")
-            st.plotly_chart(make_comparison_chart(), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-
-        v3, v4 = st.columns(2)
-        with v3:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown("**Health Indicators vs Healthy Thresholds**")
-            st.plotly_chart(make_health_indicator_charts(), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-        with v4:
+        with tab_explain:
+            st.caption("🧠 **How does the AI work?** The chart below displays which clinical metrics have the greatest relative impact on the model's predictions. Longer bars mean the model heavily factors in that specific value.")
             st.markdown('<div class="card">', unsafe_allow_html=True)
             st.markdown("**Feature Importance (relative influence on prediction)**")
             st.plotly_chart(make_feature_importance_chart(), use_container_width=True)
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # ---------------- Health Recommendations ----------------
-        st.markdown('<div class="section-title">💡 Health Recommendations</div>', unsafe_allow_html=True)
-        if prediction == 1:
-            recs = [
-                "🏥 Consult a healthcare professional for a full cardiac evaluation",
-                "🩺 Monitor blood pressure regularly",
-                "🥗 Reduce unhealthy fats and sodium intake",
-                "🏃 Exercise regularly under medical guidance",
-                "⚖️ Maintain a healthy weight",
-            ]
-        else:
-            recs = [
-                "✅ Continue your healthy lifestyle",
-                "🏃 Keep up regular exercise",
-                "🥗 Maintain a balanced diet",
-                "🩺 Schedule regular health checks",
-            ]
-        rec_cols = st.columns(len(recs))
-        for col, rec in zip(rec_cols, recs):
-            col.markdown(f'<div class="metric-card" style="text-align:left; font-size:0.95rem;">{rec}</div>', unsafe_allow_html=True)
+        with tab_recs:
+            st.caption("💡 **Patient Health Recommendations**: Actionable items calculated based on your risk results.")
+            if prediction == 1:
+                recs = [
+                    "🏥 Consult a healthcare professional for a full cardiac evaluation",
+                    "🩺 Monitor blood pressure regularly at home",
+                    "🥗 Reduce intake of unhealthy/saturated fats and sodium",
+                    "🏃 Engage in regular, moderate exercise under medical guidance",
+                    "⚖️ Maintain a healthy weight and avoid tobacco products",
+                ]
+            else:
+                recs = [
+                    "✅ Continue maintaining your current healthy lifestyle",
+                    "🏃 Keep up regular physical exercise (at least 150 mins/week)",
+                    "🥗 Maintain a balanced diet rich in whole grains and vegetables",
+                    "🩺 Schedule regular health checks to monitor vitals",
+                ]
+            for r in recs:
+                st.markdown(f'<div class="card" style="padding: 1rem 1.5rem; margin-bottom: 0.8rem; border-left: 4px solid #00f0ff;"><b>{r}</b></div>', unsafe_allow_html=True)
 
-        # ---------------- PDF Download ----------------
-        st.markdown('<div class="section-title">⬇️ Download Report</div>', unsafe_allow_html=True)
+        with tab_chat:
+            st.caption("💬 **AI Cardiovascular Assistant**: Ask questions about your heart risk report, learn about clinical values, or seek cardiovascular health recommendations.")
+            
+            # Key Setup (Rely only on system environment variable/secrets)
+            api_key = os.environ.get("GEMINI_API_KEY") or st.secrets.get("GEMINI_API_KEY")
+            
+            if not api_key:
+                st.warning("⚠️ **Assistant Unavailable**: The `GEMINI_API_KEY` environment variable is not configured. Please configure it on your system or Streamlit secrets to enable the chat assistant.")
+            else:
+                try:
+                    # Initialize chat history in Streamlit session state
+                    if "chat_history" not in st.session_state:
+                        st.session_state.chat_history = []
+                    
+                    # Layout row for Reset button
+                    c_header, c_reset = st.columns([4, 1])
+                    with c_header:
+                        st.markdown("##### Chat History")
+                    with c_reset:
+                        if st.button("🔄 Clear Chat", key="clear_chat_button", use_container_width=True):
+                            st.session_state.chat_history = []
+                            st.rerun()
+
+                    # Create a container for messages to ensure they render above the user chat_input
+                    message_container = st.container()
+
+                    # Render previous chat history inside container
+                    with message_container:
+                        for chat_msg in st.session_state.chat_history:
+                            with st.chat_message(chat_msg["role"]):
+                                st.markdown(chat_msg["content"])
+                            
+                    # Construct system prompt with up-to-date parameters
+                    fbs_val = "Elevated (>120 mg/dL)" if fbs == 1 else "Normal (<=120 mg/dL)"
+                    exang_val = "Yes" if exang == 1 else "No"
+                    pred_val = "⚠️ HIGH RISK - Possible Heart Disease" if prediction == 1 else "✅ LOW RISK - Healthy Profile"
+                    
+                    system_prompt = f"""You are an empathetic, professional, and knowledgeable cardiovascular health assistant.
+You are assisting a user who has just completed their AI heart disease prediction assessment.
+
+Here is the current patient's clinical profile:
+- Age: {age} years
+- Gender: {sex_label}
+- Resting Blood Pressure: {trestbps} mmHg
+- Cholesterol Level: {chol} mg/dL
+- Fasting Blood Sugar: {fbs_val}
+- Maximum Heart Rate Achieved: {thalach} bpm
+- Chest Pain Type: {cp_label}
+- Exercise Induced Angina: {exang_val}
+- Resting ECG Result: {restecg_label}
+- ST Depression (oldpeak): {oldpeak}
+- Slope of ST Segment: {slope_label}
+- Number of Major Vessels: {ca}
+- Thalassemia Marker: {thal_label}
+
+Our Machine Learning model predicted the patient is at: {pred_val}, with a model confidence of {confidence*100:.1f}%.
+
+Guidelines for your behavior:
+1. Explain medical terms, vitals, and findings in simple, encouraging, and clear terms.
+2. Provide practical cardiovascular health advice, exercise guidance, and dietary tips tailored to their cholesterol, blood pressure, and age.
+3. STRICT MEDICAL DISCLAIMER: Always remind the patient that your guidance is for educational/informational purposes only and they must consult a licensed cardiologist or doctor for formal medical diagnoses, clinical symptoms review, or treatment.
+4. Keep answers relatively concise and highly structured (use bullet points where appropriate).
+"""
+
+                    # Input field for user query
+                    if user_query := st.chat_input("Ask me about your heart health report...", key="chat_input_message"):
+                        # Show user query and save inside message_container
+                        with message_container:
+                            with st.chat_message("user"):
+                                st.markdown(user_query)
+                            st.session_state.chat_history.append({"role": "user", "content": user_query})
+                            
+                            # Generate response
+                            with st.chat_message("assistant"):
+                                with st.spinner("Analyzing profile & formulating response..."):
+                                    try:
+                                        genai.configure(api_key=api_key)
+                                        # Instantiate model with system instructions
+                                        model_gen = genai.GenerativeModel(
+                                            model_name='gemini-2.5-flash',
+                                            system_instruction=system_prompt
+                                        )
+                                        
+                                        # Format history for Gemini's API
+                                        history_gemini = []
+                                        # Exclude the last message we just appended (the current query)
+                                        for prev_msg in st.session_state.chat_history[:-1]:
+                                            role = "user" if prev_msg["role"] == "user" else "model"
+                                            history_gemini.append({"role": role, "parts": [prev_msg["content"]]})
+                                            
+                                        chat_session = model_gen.start_chat(history=history_gemini)
+                                        response = chat_session.send_message(user_query)
+                                        
+                                        # Display & save assistant response
+                                        assistant_reply = response.text
+                                        st.markdown(assistant_reply)
+                                        st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
+                                    except Exception as chat_err:
+                                        st.error(f"Error calling Gemini API: {chat_err}")
+                except Exception as config_err:
+                    st.error(f"Error configuring Google GenAI: {config_err}")
+
+        # ---------------- PDF Report Download Card ----------------
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown("##### ⬇️ Download Clinical Health Report")
+        st.caption("Generate and download a high-quality PDF record of the patient details, risk predictions, health analysis tables, and recommendations.")
         pdf_buffer = generate_pdf_report(prediction, confidence, risk_rows)
         st.download_button(
             label="📄 Download Patient Report PDF",
@@ -870,9 +1071,7 @@ if generate_clicked:
             mime="application/pdf",
             use_container_width=True,
         )
-
-else:
-    st.info("👆 Fill in the patient details above and click **Generate Health Report** to see the prediction, risk analysis, and visualizations.")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<br><hr>", unsafe_allow_html=True)
 st.caption("⚠️ This application is for educational and informational purposes only and is not a substitute for professional medical advice.")
