@@ -61,55 +61,67 @@ st.markdown("""
 
     /* Header */
     .app-header {
-        background: linear-gradient(135deg, #161b2c 0%, #1e293b 100%);
-        padding: 2.2rem 2.5rem;
+        background: linear-gradient(135deg, #111625 0%, #1d263b 100%);
+        padding: 1.8rem 2.2rem;
         border-radius: 18px;
         margin-bottom: 1.8rem;
-        box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);
-        border: 1px solid rgba(0, 240, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 240, 255, 0.12);
+        border: 1px solid rgba(0, 240, 255, 0.18);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
     }
     .app-header h1 {
         color: #f1f5f9;
-        font-size: 2.1rem;
+        font-size: 1.9rem;
         font-weight: 800;
         margin: 0;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
     }
     .app-header p {
         color: #94a3b8;
-        font-size: 1.05rem;
-        margin-top: 0.4rem;
+        font-size: 0.98rem;
+        margin: 0.3rem 0 0 0;
         font-weight: 400;
     }
 
-    /* Generic card */
+    /* Generic card with Glassmorphism */
     .card {
-        background: #161b2c;
+        background: rgba(22, 27, 44, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-radius: 16px;
         padding: 1.6rem 1.8rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         border: 1px solid rgba(255, 255, 255, 0.08);
         margin-bottom: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        border-color: rgba(0, 240, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.08);
     }
 
     /* Metric-style cards */
     .metric-card {
-        background: #161b2c;
+        background: rgba(22, 27, 44, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border-radius: 14px;
         padding: 1.3rem;
         text-align: center;
         box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         border: 1px solid rgba(255, 255, 255, 0.08);
         height: 100%;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
     .metric-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(0, 240, 255, 0.15);
-        border: 1px solid rgba(0, 240, 255, 0.25);
+        border: 1px solid rgba(0, 240, 255, 0.3);
     }
     .metric-card .value {
-        font-size: 1.9rem;
+        font-size: 1.7rem;
         font-weight: 800;
         color: #00f0ff;
         text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
@@ -123,28 +135,30 @@ st.markdown("""
         margin-top: 0.2rem;
     }
 
-    /* Risk result banners */
+    /* Risk result banners with glass glow */
     .risk-banner-low {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.3);
+        background: rgba(16, 185, 129, 0.08);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(16, 185, 129, 0.25);
         border-left: 6px solid #10b981;
         border-radius: 14px;
         padding: 1.6rem 2rem;
         margin-bottom: 1rem;
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
     }
     .risk-banner-high {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: rgba(239, 68, 68, 0.08);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(239, 68, 68, 0.25);
         border-left: 6px solid #ef4444;
         border-radius: 14px;
         padding: 1.6rem 2rem;
         margin-bottom: 1rem;
-        box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
     }
-    .risk-banner-low h2 { color: #34d399; margin: 0 0 0.3rem 0; font-weight: 700; }
-    .risk-banner-high h2 { color: #f87171; margin: 0 0 0.3rem 0; font-weight: 700; }
-    .risk-banner-low p, .risk-banner-high p { color: #cbd5e1; margin: 0.15rem 0; font-size: 1.02rem; }
+    .risk-banner-low h2 { color: #34d399; margin: 0 0 0.4rem 0; font-weight: 700; font-size: 1.5rem; }
+    .risk-banner-high h2 { color: #f87171; margin: 0 0 0.4rem 0; font-weight: 700; font-size: 1.5rem; }
+    .risk-banner-low p, .risk-banner-high p { color: #cbd5e1; margin: 0.2rem 0; font-size: 1.02rem; }
 
     /* Status badges */
     .badge {
@@ -160,10 +174,10 @@ st.markdown("""
 
     /* Section title */
     .section-title {
-        font-size: 1.35rem;
+        font-size: 1.25rem;
         font-weight: 700;
         color: #00f0ff;
-        margin: 1.6rem 0 0.8rem 0;
+        margin: 1.4rem 0 0.8rem 0;
         padding-bottom: 0.4rem;
         border-bottom: 3px solid rgba(0, 240, 255, 0.15);
         text-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
@@ -171,11 +185,13 @@ st.markdown("""
 
     /* Streamlit expander backgrounds */
     .streamlit-expanderHeader {
-        background-color: #161b2c !important;
+        background-color: rgba(22, 27, 44, 0.6) !important;
+        backdrop-filter: blur(4px);
         border: 1px solid rgba(255,255,255,0.05) !important;
         border-radius: 8px !important;
     }
 
+    /* Action buttons with glowing effects */
     .stButton>button {
         background: linear-gradient(135deg, #00f0ff 0%, #00a8cc 100%);
         color: #0b0f19;
@@ -185,14 +201,40 @@ st.markdown("""
         border: none;
         width: 100%;
         font-size: 1.05rem;
-        box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 240, 255, 0.25);
         transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        box-shadow: 0 6px 20px rgba(0, 240, 255, 0.5);
+        box-shadow: 0 6px 20px rgba(0, 240, 255, 0.45);
         transform: translateY(-1px);
         background: linear-gradient(135deg, #33f4ff 0%, #00c2eb 100%);
         color: #0b0f19;
+    }
+
+    /* Custom Streamlit Tab Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background-color: transparent;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: rgba(22, 27, 44, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px 8px 0px 0px;
+        padding: 8px 16px;
+        color: #94a3b8 !important;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: rgba(0, 240, 255, 0.1);
+        color: #00f0ff !important;
+        border-color: rgba(0, 240, 255, 0.25);
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: rgba(22, 27, 44, 0.95) !important;
+        color: #00f0ff !important;
+        border-color: rgba(0, 240, 255, 0.4) !important;
+        border-bottom: 2px solid #00f0ff !important;
     }
 
     [data-testid="stSidebar"] {
@@ -220,15 +262,6 @@ MODEL_METRICS = {
     "f1": 0.85,
 }
 
-CLASSIFICATION_REPORT_TEXT = """              precision    recall  f1-score   support
-
-     Healthy       0.83      0.86      0.85        29
-     Disease       0.87      0.84      0.86        32
-
-    accuracy                           0.85        61
-   macro avg       0.85      0.85      0.85        61
-weighted avg       0.85      0.85      0.85        61
-"""
 
 # Approximate logistic-regression-derived feature importance (|coefficient| based,
 # illustrative ranking consistent with clinical literature on this dataset)
@@ -269,157 +302,6 @@ def load_artifacts():
 
 model, feature_names, scaler, load_error = load_artifacts()
 
-# ============================================================================
-# HEADER
-# ============================================================================
-st.markdown("""
-<div class="app-header">
-    <h1>❤️ Heart Disease Prediction &amp; Health Report System</h1>
-    <p>AI-powered cardiovascular risk assessment using Machine Learning</p>
-</div>
-""", unsafe_allow_html=True)
-
-if load_error:
-    st.error(f"⚠️ {load_error}")
-    st.info("The app will still render below, but predictions are disabled until the model files are available.")
-
-# ============================================================================
-# SIDEBAR — NAVIGATION & INFO
-# ============================================================================
-with st.sidebar:
-    st.markdown("### 🧭 Navigation")
-    page = st.radio(
-        "Select Page:",
-        ["Heart Risk Predictor", "Model Performance"],
-        index=0
-    )
-    st.markdown("---")
-    st.markdown("### ℹ️ About This Tool")
-    st.markdown(
-        "This dashboard uses a **Logistic Regression** model trained on the "
-        "UCI Heart Disease dataset to estimate cardiovascular risk from "
-        "clinical parameters."
-    )
-    st.markdown("---")
-    st.markdown("### 📊 Model Snapshot")
-    st.markdown(f"- **Accuracy:** {MODEL_METRICS['accuracy']*100:.0f}%")
-    st.markdown(f"- **F1 Score:** {MODEL_METRICS['f1']*100:.0f}%")
-    st.markdown("---")
-    st.warning(
-        "This tool is for **educational/informational purposes only** and "
-        "does not replace professional medical advice, diagnosis, or treatment."
-    )
-
-# ============================================================================
-# PAGE ROUTING
-# ============================================================================
-if page == "Model Performance":
-    st.markdown('<div class="section-title">📈 Model Performance</div>', unsafe_allow_html=True)
-
-    m1, m2, m3, m4 = st.columns(4)
-    metric_labels = [
-        ("Accuracy", MODEL_METRICS["accuracy"]),
-        ("Precision", MODEL_METRICS["precision"]),
-        ("Recall", MODEL_METRICS["recall"]),
-        ("F1 Score", MODEL_METRICS["f1"]),
-    ]
-    for col, (label, val) in zip([m1, m2, m3, m4], metric_labels):
-        col.markdown(f"""
-        <div class="metric-card">
-            <div class="value">{val*100:.0f}%</div>
-            <div class="label">{label}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    perf_col1, perf_col2 = st.columns([1, 1])
-    with perf_col1:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("**Metrics Overview**")
-        st.plotly_chart(make_confusion_style_metrics_chart(), use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    with perf_col2:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown("**Classification Report**")
-        st.code(CLASSIFICATION_REPORT_TEXT, language=None)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.caption("⚠️ This application is for educational and informational purposes only and is not a substitute for professional medical advice.")
-    st.stop()
-
-# Continue below if page == "Heart Risk Predictor"
-# ============================================================================
-# INPUT FORM
-# ============================================================================
-st.markdown('<div class="section-title">📝 Patient Information</div>', unsafe_allow_html=True)
-
-with st.expander("👤 Personal Information", expanded=True):
-    c1, c2 = st.columns(2)
-    with c1:
-        age = st.number_input("Age (years)", min_value=1, max_value=120, value=50, step=1)
-    with c2:
-        sex_label = st.radio("Gender", ["Male", "Female"], horizontal=True)
-        sex = 1 if sex_label == "Male" else 0
-
-with st.expander("🩺 Medical Measurements", expanded=True):
-    c1, c2 = st.columns(2)
-    with c1:
-        trestbps = st.slider("Resting Blood Pressure (mmHg)", min_value=80, max_value=220, value=120, step=1)
-        chol = st.slider("Cholesterol Level (mg/dL)", min_value=100, max_value=600, value=200, step=1)
-        thalach = st.slider("Maximum Heart Rate Achieved (bpm)", min_value=60, max_value=220, value=150, step=1)
-    with c2:
-        oldpeak = st.slider("ST Depression (oldpeak)", min_value=0.0, max_value=6.5, value=1.0, step=0.1)
-        st.markdown("&nbsp;")
-        st.caption("ST Depression is measured during an exercise ECG test relative to rest.")
-
-with st.expander("❤️ Heart Test Results", expanded=True):
-    c1, c2 = st.columns(2)
-    with c1:
-        cp_options = {
-            "Typical Angina": 0,
-            "Atypical Angina": 1,
-            "Non-anginal Pain": 2,
-            "Asymptomatic": 3,
-        }
-        cp_label = st.selectbox("Chest Pain Type", list(cp_options.keys()))
-        cp = cp_options[cp_label]
-
-        fbs_label = st.radio("Fasting Blood Sugar > 120 mg/dL?", ["No", "Yes"], horizontal=True)
-        fbs = 1 if fbs_label == "Yes" else 0
-
-        restecg_options = {
-            "Normal": 0,
-            "ST-T Wave Abnormality": 1,
-            "Left Ventricular Hypertrophy": 2,
-        }
-        restecg_label = st.selectbox("Resting ECG Result", list(restecg_options.keys()))
-        restecg = restecg_options[restecg_label]
-
-        exang_label = st.radio("Exercise Induced Angina?", ["No", "Yes"], horizontal=True)
-        exang = 1 if exang_label == "Yes" else 0
-
-    with c2:
-        slope_options = {
-            "Upsloping": 0,
-            "Flat": 1,
-            "Downsloping": 2,
-        }
-        slope_label = st.selectbox("Slope of ST Segment", list(slope_options.keys()))
-        slope = slope_options[slope_label]
-
-        ca = st.slider("Number of Major Vessels Colored (0–4)", min_value=0, max_value=4, value=0, step=1)
-
-        thal_options = {
-            "Normal": 1,
-            "Fixed Defect": 2,
-            "Reversible Defect": 3,
-        }
-        thal_label = st.selectbox("Thalassemia", list(thal_options.keys()))
-        thal = thal_options[thal_label]
-
-st.markdown("<br>", unsafe_allow_html=True)
-generate_clicked = st.button("🔬 Generate Health Report", use_container_width=True)
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -451,16 +333,6 @@ def status_badge(status):
 
 def get_risk_assessment_table():
     rows = []
-
-    # Age
-    if age < 45:
-        age_status = "Normal"
-    elif age < 55:
-        age_status = "Warning"
-    else:
-        age_status = "High"
-    rows.append(("Age", f"{age} years", "< 45 ideal", age_status,
-                 "Cardiovascular risk tends to increase with age."))
 
     # Cholesterol
     if chol < 200:
@@ -626,24 +498,115 @@ def make_feature_importance_chart():
     return fig
 
 
-def make_confusion_style_metrics_chart():
-    labels = ["Accuracy", "Precision", "Recall", "F1 Score"]
-    values = [MODEL_METRICS["accuracy"], MODEL_METRICS["precision"],
-              MODEL_METRICS["recall"], MODEL_METRICS["f1"]]
-    fig = go.Figure(go.Bar(
-        x=labels, y=[v * 100 for v in values],
-        marker_color=["#00f0ff", "#38bdf8", "#0ea5e9", "#0284c7"],
-        text=[f"{v*100:.0f}%" for v in values], textposition="outside",
-        textfont=dict(color="#cbd5e1")
-    ))
-    fig.update_layout(
-        height=320, yaxis_range=[0, 105], margin=dict(t=30, b=30, l=30, r=20),
-        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-        font={"color": "#cbd5e1"}
+
+# ============================================================================
+# HEADER
+# ============================================================================
+st.markdown("""
+<div class="app-header">
+    <h1>❤️ Heart Disease Prediction &amp; Health Report System</h1>
+    <p>AI-powered cardiovascular risk assessment using Machine Learning</p>
+</div>
+""", unsafe_allow_html=True)
+
+if load_error:
+    st.error(f"⚠️ {load_error}")
+    st.info("The app will still render below, but predictions are disabled until the model files are available.")
+
+# ============================================================================
+# SIDEBAR — NAVIGATION & INFO
+# ============================================================================
+with st.sidebar:
+    st.markdown("### ℹ️ About This Tool")
+    st.markdown(
+        "This dashboard uses a **Logistic Regression** model trained on the "
+        "UCI Heart Disease dataset to estimate cardiovascular risk from "
+        "clinical parameters."
     )
-    fig.update_xaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
-    fig.update_yaxes(gridcolor="rgba(255, 255, 255, 0.08)", zerolinecolor="rgba(255, 255, 255, 0.12)")
-    return fig
+    st.markdown("---")
+    st.markdown("### 📊 Model Snapshot")
+    st.markdown(f"- **Accuracy:** {MODEL_METRICS['accuracy']*100:.0f}%")
+    st.markdown(f"- **F1 Score:** {MODEL_METRICS['f1']*100:.0f}%")
+    st.markdown("---")
+    st.warning(
+        "This tool is for **educational/informational purposes only** and "
+        "does not replace professional medical advice, diagnosis, or treatment."
+    )
+
+
+# ============================================================================
+# INPUT FORM
+# ============================================================================
+st.markdown('<div class="section-title">📝 Patient Information</div>', unsafe_allow_html=True)
+
+with st.expander("👤 Personal Information", expanded=True):
+    c1, c2 = st.columns(2)
+    with c1:
+        age = st.number_input("Age (years)", min_value=1, max_value=120, value=50, step=1)
+    with c2:
+        sex_label = st.radio("Gender", ["Male", "Female"], horizontal=True)
+        sex = 1 if sex_label == "Male" else 0
+
+with st.expander("🩺 Medical Measurements", expanded=True):
+    c1, c2 = st.columns(2)
+    with c1:
+        trestbps = st.slider("Resting Blood Pressure (mmHg)", min_value=80, max_value=220, value=120, step=1)
+        chol = st.slider("Cholesterol Level (mg/dL)", min_value=100, max_value=600, value=200, step=1)
+        thalach = st.slider("Maximum Heart Rate Achieved (bpm)", min_value=60, max_value=220, value=150, step=1)
+    with c2:
+        oldpeak = st.slider("ST Depression (oldpeak)", min_value=0.0, max_value=6.5, value=1.0, step=0.1)
+        st.markdown("&nbsp;")
+        st.caption("ST Depression is measured during an exercise ECG test relative to rest.")
+
+with st.expander("❤️ Heart Test Results", expanded=True):
+    c1, c2 = st.columns(2)
+    with c1:
+        cp_options = {
+            "Typical Angina": 0,
+            "Atypical Angina": 1,
+            "Non-anginal Pain": 2,
+            "Asymptomatic": 3,
+        }
+        cp_label = st.selectbox("Chest Pain Type", list(cp_options.keys()))
+        cp = cp_options[cp_label]
+
+        fbs_label = st.radio("Fasting Blood Sugar > 120 mg/dL?", ["No", "Yes"], horizontal=True)
+        fbs = 1 if fbs_label == "Yes" else 0
+
+        restecg_options = {
+            "Normal": 0,
+            "ST-T Wave Abnormality": 1,
+            "Left Ventricular Hypertrophy": 2,
+        }
+        restecg_label = st.selectbox("Resting ECG Result", list(restecg_options.keys()))
+        restecg = restecg_options[restecg_label]
+
+        exang_label = st.radio("Exercise Induced Angina?", ["No", "Yes"], horizontal=True)
+        exang = 1 if exang_label == "Yes" else 0
+
+    with c2:
+        slope_options = {
+            "Upsloping": 0,
+            "Flat": 1,
+            "Downsloping": 2,
+        }
+        slope_label = st.selectbox("Slope of ST Segment", list(slope_options.keys()))
+        slope = slope_options[slope_label]
+
+        ca = st.slider("Number of Major Vessels Colored (0–4)", min_value=0, max_value=4, value=0, step=1)
+
+        thal_options = {
+            "Normal": 1,
+            "Fixed Defect": 2,
+            "Reversible Defect": 3,
+        }
+        thal_label = st.selectbox("Thalassemia", list(thal_options.keys()))
+        thal = thal_options[thal_label]
+
+st.markdown("<br>", unsafe_allow_html=True)
+generate_clicked = st.button("🔬 Generate Health Report", use_container_width=True)
+
+
 
 
 # ============================================================================
@@ -826,25 +789,22 @@ if generate_clicked:
         st.markdown('<div class="section-title">📋 Health Risk Analysis</div>', unsafe_allow_html=True)
         risk_rows = get_risk_assessment_table()
 
-        table_html = """
-        <table style="width:100%; border-collapse: collapse; font-size:0.95rem; color:#cbd5e1;">
-        <tr style="background:#0f172a; color:#f1f5f9; border-bottom: 2px solid rgba(0, 240, 255, 0.2);">
-            <th style="padding:12px 10px; text-align:left; border-radius:8px 0 0 0;">Parameter</th>
-            <th style="padding:12px 10px; text-align:left;">User Value</th>
-            <th style="padding:12px 10px; text-align:left;">Normal Range</th>
-            <th style="padding:12px 10px; text-align:left; border-radius:0 8px 0 0;">Status</th>
-        </tr>
-        """
+        table_html = """<table style="width:100%; border-collapse: collapse; font-size:0.95rem; color:#cbd5e1;">
+<tr style="background:#0f172a; color:#f1f5f9; border-bottom: 2px solid rgba(0, 240, 255, 0.2);">
+    <th style="padding:12px 10px; text-align:left; border-radius:8px 0 0 0;">Parameter</th>
+    <th style="padding:12px 10px; text-align:left;">User Value</th>
+    <th style="padding:12px 10px; text-align:left;">Normal Range</th>
+    <th style="padding:12px 10px; text-align:left; border-radius:0 8px 0 0;">Status</th>
+</tr>"""
         for i, (name, val, normal_range, status, explanation) in enumerate(risk_rows):
             bg = "rgba(30, 41, 59, 0.4)" if i % 2 == 0 else "rgba(15, 23, 42, 0.4)"
-            table_html += f"""
-            <tr style="background:{bg}; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding:10px; color:#f1f5f9;"><b>{name}</b></td>
-                <td style="padding:10px;">{val}</td>
-                <td style="padding:10px;">{normal_range}</td>
-                <td style="padding:10px;">{status_badge(status)}</td>
-            </tr>
-            """
+            safe_range = normal_range.replace("<", "&lt;").replace(">", "&gt;")
+            table_html += f"""<tr style="background:{bg}; border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <td style="padding:10px; color:#f1f5f9;"><b>{name}</b></td>
+    <td style="padding:10px;">{val}</td>
+    <td style="padding:10px;">{safe_range}</td>
+    <td style="padding:10px;">{status_badge(status)}</td>
+</tr>"""
         table_html += "</table>"
         st.markdown(f'<div class="card">{table_html}</div>', unsafe_allow_html=True)
 
