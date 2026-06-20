@@ -930,19 +930,13 @@ with container_result:
             st.caption("ℹ️ **Visual Summary**: Explore your vital metrics in comparison with recommended targets. Move inputs on the left to watch them adjust in real-time.")
             v1, v2 = st.columns(2)
             with v1:
-                st.markdown('<div class="card">', unsafe_allow_html=True)
                 st.plotly_chart(make_gauge_chart(prob_high), use_container_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
             with v2:
-                st.markdown('<div class="card">', unsafe_allow_html=True)
                 st.markdown("**Vitals Comparison: User Value vs Recommended Range**")
                 st.plotly_chart(make_comparison_chart(), use_container_width=True)
-                st.markdown('</div>', unsafe_allow_html=True)
 
-            st.markdown('<div class="card">', unsafe_allow_html=True)
             st.markdown("**Health Indicators vs Healthy Thresholds**")
             st.plotly_chart(make_health_indicator_charts(), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 
         with tab_table:
             st.caption("🩺 **Vitals & Risk Checklist**: A structured table of your values against medical references.")
@@ -999,10 +993,8 @@ with container_result:
 
         with tab_explain:
             st.caption("🧠 **How does the AI work?** The chart below displays which clinical metrics have the greatest relative impact on the model's predictions. Longer bars mean the model heavily factors in that specific value.")
-            st.markdown('<div class="card">', unsafe_allow_html=True)
             st.markdown("**Feature Importance (relative influence on prediction)**")
             st.plotly_chart(make_feature_importance_chart(), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 
         with tab_recs:
             st.caption("💡 **Patient Health Recommendations**: Actionable items calculated based on your risk results.")
@@ -1095,7 +1087,7 @@ with container_result:
                     pred_val = "⚠️ HIGH RISK - Possible Heart Disease" if prediction == 1 else "✅ LOW RISK - Healthy Profile"
                     
                     system_prompt = f"""You are an empathetic, professional, and knowledgeable cardiovascular health assistant.
-You are assisting a user who has just completed their AI heart disease prediction assessment.
+You are assisting a user who has just completed their AI heart disease prediction.
 
 Here is the current patient's clinical profile:
 - Age: {age} years
