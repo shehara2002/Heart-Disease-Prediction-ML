@@ -81,12 +81,6 @@ pandas
 plotly
 google-generativeai
 reportlab
-```
-
-Install all at once:
-```bash
-pip install -r requirements.txt
-```
 
 ---
 
