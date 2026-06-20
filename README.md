@@ -34,64 +34,6 @@ Heart-Disease-Prediction-ML/
 └── README.md
 ```
 
----
-
-## ⚙️ Setup & Installation
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/shehara2002/Heart-Disease-Prediction-ML.git
-cd Heart-Disease-Prediction-ML
-```
-
-### 2. Create a virtual environment (recommended)
-
-```bash
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure the Gemini API Key
-
-The AI Chat Assistant requires a **Google Gemini API key**. Set it via one of these methods:
-
-**Option A — Streamlit Secrets (recommended for local dev):**
-
-Edit `.streamlit/secrets.toml`:
-```toml
-GEMINI_API_KEY = "your-api-key-here"
-```
-
-**Option B — Environment Variable:**
-```bash
-# Windows PowerShell
-$env:GEMINI_API_KEY = "your-api-key-here"
-
-# macOS / Linux
-export GEMINI_API_KEY="your-api-key-here"
-```
-
-> Get your free API key at [aistudio.google.com](https://aistudio.google.com/app/apikey)
-
-### 5. Run the app
-
-```bash
-streamlit run app.py
-```
-
-The app will open at `http://localhost:8501` in your browser.
-
----
 
 ## 🧬 Clinical Input Parameters
 
@@ -126,16 +68,6 @@ The app will open at `http://localhost:8501` in your browser.
 
 - **Label 0** → No Heart Disease (Low Risk)
 - **Label 1** → Heart Disease Detected (High Risk)
-
-The model artifact (`heart_model.pkl`) is expected to be a `dict` with keys:
-```python
-{
-  "model": <LogisticRegression>,
-  "feature_names": ["age", "sex", "cp", ...]
-}
-```
-The scaler (`heart_scaler.pkl`) is a fitted `StandardScaler` instance.
-
 ---
 
 ## 📦 Dependencies
@@ -166,6 +98,3 @@ pip install -r requirements.txt
 
 ---
 
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
