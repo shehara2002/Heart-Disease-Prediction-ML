@@ -1092,7 +1092,7 @@ with container_result:
                     # Construct system prompt with up-to-date parameters
                     fbs_val = "Elevated (>120 mg/dL)" if fbs == 1 else "Normal (<=120 mg/dL)"
                     exang_val = "Yes" if exang == 1 else "No"
-                    pred_val = "⚠️ HIGH RISK - Possible Heart Disease" if prediction == 0 else "✅ LOW RISK - Healthy Profile"
+                    pred_val = "⚠️ HIGH RISK - Possible Heart Disease" if prediction == 1 else "✅ LOW RISK - Healthy Profile"
                     
                     system_prompt = f"""You are an empathetic, professional, and knowledgeable cardiovascular health assistant.
 You are assisting a user who has just completed their AI heart disease prediction assessment.
